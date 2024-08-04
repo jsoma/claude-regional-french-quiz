@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>French Regional Dialect Quiz</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.development.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 500px;
+            border: 2px solid #002395;
+        }
+        .button {
+            background-color: #002395;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #001c75;
+        }
+        .button:disabled {
+            background-color: #cccccc;
+        }
+        .progress {
+            width: 100%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #ed2939;
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        .option {
+            margin-bottom: 10px;
+        }
+        .explanation {
+            font-style: italic;
+            margin-top: 10px;
+            color: #555;
+        }
+        .results {
+            list-style-type: none;
+            padding: 0;
+        }
+        .results li {
+            margin-bottom: 5px;
+        }
+        h2 {
+            color: #002395;
+        }
+        .flag-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const quizData = [
+            {
+                word: "chocolate pastry",
+                options: [
+                    { text: "pain au chocolat", dialect: "Northern French" },
+                    { text: "chocolatine", dialect: "Southwestern French" },
+                    { text: "petit pain", dialect: "Northeastern French" },
+                    { text: "croissant au chocolat", dialect: "Southeastern French" },
+                ],
+                explanation: "The 'pain au chocolat' vs 'chocolatine' debate is famous in France. 'Chocolatine' is primarily used in the Southwest, while 'petit pain' is common in Alsace and parts of Lorraine."
+            },
+            {
+                word: "child",
+                options: [
+                    { text: "gamin", dialect: "Parisian" },
+                    { text: "drôle", dialect: "Southwestern French" },
+                    { text: "gone", dialect: "Lyonnais" },
+                    { text: "marmot", dialect: "Alpine French" },
+                ],
+                explanation: "'Gamin' is informal Parisian. 'Drôle' in the Southwest literally means 'funny' but is used for 'child'. 'Gone' is specific to the Lyon area. 'Marmot' is used in Alpine regions."
+            },
+            {
+                word: "potato",
+                options: [
+                    { text: "patate", dialect: "Informal French" },
+                    { text: "tartifle", dialect: "Savoyard" },
+                    { text: "truffole", dialect: "Auvergnat" },
+                    { text: "topinambour", dialect: "Provençal" },
+                ],
+                explanation: "'Tartifle' in Savoyard and 'truffole' in Auvergnat are regional terms. 'Topinambour' in Provençal actually refers to Jerusalem artichoke but is sometimes used for potato."
+            },
+            {
+                word: "to chat",
+                options: [
+                    { text: "papoter", dialect: "Standard French" },
+                    { text: "tchatcher", dialect: "Marseille" },
+                    { text: "caqueter", dialect: "Norman" },
+                    { text: "jaser", dialect: "Eastern French" },
+                ],
+                explanation: "'Tchatcher' in Marseille has North African influences. 'Caqueter' in Normandy literally means 'to cluck like a hen'. 'Jaser' is common in Eastern France."
+            },
+            {
+                word: "money",
+                options: [
+                    { text: "pognon", dialect: "Parisian Slang" },
+                    { text: "pépettes", dialect: "Southern French" },
+                    { text: "mitraille", dialect: "Northern French" },
+                    { text: "picaillons", dialect: "Provençal" },
+                ],
+                explanation: "'Pognon' is common Parisian slang. 'Pépettes' is used in the South. 'Mitraille' in the North originally meant 'grapeshot' but evolved to mean small change. 'Picaillons' comes from Provençal."
+            },
+            {
+                word: "weather",
+                options: [
+                    { text: "temps", dialect: "Standard French" },
+                    { text: "tanche", dialect: "Picard" },
+                    { text: "Tian", dialect: "Corsican French" },
+                    { text: "climat", dialect: "Swiss French" },
+                ],
+                explanation: "'Tanche' in Picard dialect is used for both weather and time. 'Tian' in Corsican French comes from the Italian 'tempo'. 'Climat' in Swiss French is used more commonly than in standard French."
+            },
+            {
+                word: "mess",
+                options: [
+                    { text: "bazar", dialect: "Informal French" },
+                    { text: "bousin", dialect: "Northeastern French" },
+                    { text: "chantier", dialect: "Southern French" },
+                    { text: "souk", dialect: "Marseille" },
+                ],
+                explanation: "'Bazar' is from Persian, widely used informally. 'Bousin' in the Northeast means a noisy, messy place. 'Chantier' literally means 'construction site'. 'Souk' in Marseille comes from Arabic, reflecting the city's diverse influences."
+            },
+            {
+                word: "boy",
+                options: [
+                    { text: "gars", dialect: "Standard French" },
+                    { text: "minot", dialect: "Marseille" },
+                    { text: "drôle", dialect: "Southwestern French" },
+                    { text: "gône", dialect: "Lyonnais" },
+                ],
+                explanation: "'Minot' is typically Marseillais. 'Drôle' in the Southwest is used for both boys and girls. 'Gône' (or 'gone') is very specific to the Lyon area."
+            },
+            {
+                word: "hungry",
+                options: [
+                    { text: "avoir la dalle", dialect: "Parisian Slang" },
+                    { text: "avoir les crocs", dialect: "Southern French" },
+                    { text: "avoir la fringale", dialect: "Eastern French" },
+                    { text: "cluder", dialect: "Northern French" },
+                ],
+                explanation: "'Avoir la dalle' is common Parisian slang. 'Avoir les crocs' (literally 'to have fangs') is more Southern. 'Avoir la fringale' is used in the East. 'Cluder' is specific to Northern dialects."
+            },
+            {
+                word: "work",
+                options: [
+                    { text: "boulot", dialect: "Informal French" },
+                    { text: "taf", dialect: "Urban French" },
+                    { text: "turbin", dialect: "Rural French" },
+                    { text: "besogne", dialect: "Old French" },
+                ],
+                explanation: "'Boulot' is widely used informal French. 'Taf' is more recent urban slang. 'Turbin' is often used in rural areas. 'Besogne' is an old French term still used in some regions."
+            }
+        ];
+
+        function FrenchFlag() {
+            return (
+                <svg width="150" height="100" viewBox="0 0 3 2">
+                    <rect width="1" height="2" fill="#002395"/>
+                    <rect width="1" height="2" x="1" fill="#FFFFFF"/>
+                    <rect width="1" height="2" x="2" fill="#ED2939"/>
+                </svg>
+            );
+        }
+
+        function FrenchDialectQuiz() {
+            const [currentQuestion, setCurrentQuestion] = React.useState(0);
+            const [selectedOption, setSelectedOption] = React.useState('');
+            const [score, setScore] = React.useState({});
+            const [showResults, setShowResults] = React.useState(false);
+            const [showExplanation, setShowExplanation] = React.useState(false);
+
+            const handleOptionChange = (value) => {
+                setSelectedOption(value);
+                setShowExplanation(true);
+            };
+
+            const handleNextQuestion = () => {
+                if (selectedOption) {
+                    const selectedDialect = quizData[currentQuestion].options.find(
+                        option => option.text === selectedOption
+                    ).dialect;
+                    
+                    setScore(prevScore => ({
+                        ...prevScore,
+                        [selectedDialect]: (prevScore[selectedDialect] || 0) + 1
+                    }));
+
+                    if (currentQuestion < quizData.length - 1) {
+                        setCurrentQuestion(currentQuestion + 1);
+                        setSelectedOption('');
+                        setShowExplanation(false);
+                    } else {
+                        setShowResults(true);
+                    }
+                }
+            };
+
+            const resetQuiz = () => {
+                setCurrentQuestion(0);
+                setSelectedOption('');
+                setScore({});
+                setShowResults(false);
+                setShowExplanation(false);
+            };
+
+            if (showResults) {
+                return (
+                    <div className="card">
+                        <h2>Quiz Results</h2>
+                        <div className="flag-container">
+                            <FrenchFlag />
+                        </div>
+                        <ul className="results">
+                            {Object.entries(score).map(([dialect, count]) => (
+                                <li key={dialect}>{dialect}: {count}</li>
+                            ))}
+                        </ul>
+                        <h3>Word Explanations:</h3>
+                        <ul>
+                            {quizData.map((question, index) => (
+                                <li key={index}>
+                                    <strong>{question.word}:</strong> {question.explanation}
+                                </li>
+                            ))}
+                        </ul>
+                        <button className="button" onClick={resetQuiz}>Restart Quiz</button>
+                    </div>
+                );
+            }
+
+            const currentQuestionData = quizData[currentQuestion];
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+
+            return (
+                <div className="card">
+                    <h2>French Regional Dialect Quiz</h2>
+                    <div className="progress">
+                        <div className="progress-bar" style={{width: `${progress}%`}}></div>
+                    </div>
+                    <p>Translate: {currentQuestionData.word}</p>
+                    {currentQuestionData.options.map((option, index) => (
+                        <div key={index} className="option">
+                            <input 
+                                type="radio" 
+                                id={`option-${index}`} 
+                                name="option" 
+                                value={option.text}
+                                checked={selectedOption === option.text}
+                                onChange={() => handleOptionChange(option.text)}
+                            />
+                            <label htmlFor={`option-${index}`}>
+                                {option.text}
+                                {showExplanation && ` (${option.dialect})`}
+                            </label>
+                        </div>
+                    ))}
+                    {showExplanation && (
+                        <p className="explanation">{currentQuestionData.explanation}</p>
+                    )}
+                    <button className="button" onClick={handleNextQuestion} disabled={!selectedOption}>
+                        {currentQuestion < quizData.length - 1 ? 'Next' : 'Finish'}
+                    </button>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<FrenchDialectQuiz />, document.getElementById('root'));
+    </script>
+</body>
+</html>
